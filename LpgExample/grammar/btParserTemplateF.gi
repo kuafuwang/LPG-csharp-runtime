@@ -6,13 +6,11 @@
 --
 -- B E G I N N I N G   O F   T E M P L A T E   btParserTemplateF
 --
-%Options programming_language=rt_cpp,margin=4,backtrack
+%Options programming_language=csharp,margin=4,backtrack
 %Options table,error_maps,scopes
 %options prefix=TK_
-%options action-block=("*.h", "/.", "./")
-%options action-block=("*.cpp", "/!", "!/")
-%options ast-block=("/!", "!/")
-%options ParseTable=ParseTable
+%options action-block=("*.cs", "/.", "./")
+%options ParseTable=LPG2.Runtime.ParseTable
 %options nt-check
 
 --
@@ -37,43 +35,43 @@
                 ./
 
     $BeginAction
-    /!$Header$case $rule_number: {
-                   //#line $next_line "$input_file$"!/
+    /.$Header$case $rule_number: {
+                   //#line $next_line "$input_file$"./
 
     $EndAction
-    /!            break;
-                }!/
+    /.            break;
+                }./
 
     $BeginJava
-    /!$Header$case $rule_number: {
+    /.$Header$case $rule_number: {
                     $symbol_declarations
-                    //#line $next_line "$input_file$"!/
+                    //#line $next_line "$input_file$"./
 
-    $EndJava /!$EndAction!/
+    $EndJava /.$EndAction./
 
     $NoAction
-    /!$Header$case $rule_number:
-                    break;!/
+    /.$Header$case $rule_number:
+                    break;./
 
     $BadAction
-    /!$Header$case $rule_number:
-                    throw  std::exception("No action specified for rule " + $rule_number);!/
+    /.$Header$case $rule_number:
+                    throw new Error("No action specified for rule " + $rule_number);./
 
     $NullAction
-    /!$Header$case $rule_number:
-                    setResult(nullptr);
-                    break;!/
+    /.$Header$case $rule_number:
+                    setResult(null);
+                    break;./
 
     $BeginActions
-    /!
-         #include "$action_type.h"
-         void $action_type::ruleAction(int ruleNumber)
+    /.
+        @SuppressWarnings("unchecked") // Casting object to various generic types
+        public void ruleAction(int ruleNumber)
         {
             switch (ruleNumber)
-            {!/
+            {./
 
     $SplitActions
-    /!
+    /.
                     default:
                         ruleAction$rule_number(ruleNumber);
                         break;
@@ -81,54 +79,54 @@
                 return;
             }
         
-             void ruleAction$rule_number(int ruleNumber)
+            public void ruleAction$rule_number(int ruleNumber)
             {
                 switch (ruleNumber)
                 {
-                    //#line $next_line "$input_file$"!/
+                    //#line $next_line "$input_file$"./
 
     $EndActions
-    /!
+    /.
                 default:
                     break;
             }
             return;
-        }!/
+        }./
 
     $entry_declarations
     /.
-         $ast_class * parse$entry_name()
+        public $ast_class parse$entry_name()
         {
-            return parse$entry_name(nullptr, 0);
+            return parse$entry_name(null, 0);
         }
             
-         $ast_class * parse$entry_name(Monitor* monitor)
+        public $ast_class parse$entry_name(Monitor monitor)
         {
             return parse$entry_name(monitor, 0);
         }
             
-         $ast_class * parse$entry_name(int error_repair_count)
+        public $ast_class parse$entry_name(int error_repair_count)
         {
-            return parse$entry_name(nullptr, error_repair_count);
+            return parse$entry_name(null, error_repair_count);
         }
             
-         $ast_class * parse$entry_name(Monitor *monitor, int error_repair_count)
+        public $ast_class parse$entry_name(Monitor monitor, int error_repair_count)
         {
-            btParser->setMonitor(monitor);
+            btParser.setMonitor(monitor);
             
             try
             {
-                return ($ast_class *) btParser->fuzzyParseEntry($sym_type::$entry_marker, error_repair_count);
+                return ($ast_class) btParser.fuzzyParseEntry($sym_type.$entry_marker, error_repair_count);
             }
-            catch (BadParseException& e)
+            catch (BadParseException e)
             {
-                prsStream->reset(e.error_token); // point to error token
+                prsStream.reset(e.error_token); // point to error token
 
-                 std::shared_ptr< DiagnoseParser> diagnoseParser = std::make_shared<DiagnoseParser>(prsStream, prsTable);
-                diagnoseParser->diagnoseEntry($sym_type::$entry_marker, e.error_token);
+                DiagnoseParser diagnoseParser = new DiagnoseParser(prsStream, prsTable);
+                diagnoseParser.diagnoseEntry($sym_type.$entry_marker, e.error_token);
             }
 
-            return nullptr;
+            return null;
         }
     ./
 
@@ -137,7 +135,7 @@
     --
     $additional_interfaces /../
     $ast_class /.$ast_type./
-    $super_class /.Object./   
+    $super_class /.object./   
     $unimplemented_symbols_warning /.false./
 
     --
@@ -152,7 +150,7 @@
     $getToken /. // macro getToken is deprecated. Use function getRhsTokenIndex
                 getParser().getToken./
     $getIToken /. // macro getIToken is deprecated. Use function getRhsIToken
-                 prsStream->getIToken./
+                 prsStream.getIToken./
     $getLeftSpan /. // macro getLeftSpan is deprecated. Use function getLeftSpan
                    getParser().getFirstToken./
     $getRightSpan /. // macro getRightSpan is deprecated. Use function getRightSpan
@@ -161,193 +159,165 @@
 
 %Globals
     /.
-#pragma once
-
-#include <iostream>
-#include "AstPoolHolder.h"
-#include "BacktrackingParser.h"
-#include "DeterministicParser.h"
-#include "diagnose.h"
-#include "ErrorToken.h"
-#include "Exception.h"
-#include "IAbstractArrayList.h"
-#include "IAst.h"
-#include "IAstVisitor.h"
-#include "ILexStream.h"
-#include "$sym_type.h"
-#include "$prs_type.h"
-#include "Object.h"
-#include "ParseTable.h"
-#include "PrsStream.h"
-#include "RuleAction.h"
-#include "IcuUtil.h"
-#include "stringex.h"
-#include "Any.h"
+    using  LPG2.Runtime;
+    using System;
     ./
 %End
 
 %Headers
     /.
-     struct $action_type :public $super_class ,public RuleAction$additional_interfaces
+    public class $action_type : $super_class , RuleAction$additional_interfaces
     {
-       
-        PrsStream* prsStream = nullptr;
-        ~$action_type (){
-            delete prsStream;
-            delete btParser;
-        }
-         bool unimplementedSymbolsWarning = $unimplemented_symbols_warning;
-
-         inline static ParseTable* prsTable = new $prs_type();
-         ParseTable* getParseTable() { return prsTable; }
-
-         BacktrackingParser* btParser = nullptr;
-         BacktrackingParser* getParser() { return btParser; }
-
-         void setResult(Object* object) { btParser->setSym1(object); }
-         Object* getRhsSym(int i) { return btParser->getSym(i); }
-
-         int getRhsTokenIndex(int i) { return btParser->getToken(i); }
-         IToken* getRhsIToken(int i) { return prsStream->getIToken(getRhsTokenIndex(i)); }
+        private PrsStream prsStream = null;
         
-         int getRhsFirstTokenIndex(int i) { return btParser->getFirstToken(i); }
-         IToken* getRhsFirstIToken(int i) { return prsStream->getIToken(getRhsFirstTokenIndex(i)); }
+        private bool unimplementedSymbolsWarning = $unimplemented_symbols_warning;
 
-         int getRhsLastTokenIndex(int i) { return btParser->getLastToken(i); }
-         IToken* getRhsLastIToken(int i) { return prsStream->getIToken(getRhsLastTokenIndex(i)); }
+        private static ParseTable prsTable = new $prs_type();
+        public ParseTable getParseTable() { return prsTable; }
 
-         int getLeftSpan() { return btParser->getFirstToken(); }
-         IToken* getLeftIToken()  { return prsStream->getIToken(getLeftSpan()); }
+        private BacktrackingParser btParser = null;
+        public BacktrackingParser getParser() { return btParser; }
 
-         int getRightSpan() { return btParser->getLastToken(); }
-         IToken* getRightIToken() { return prsStream->getIToken(getRightSpan()); }
+        private void setResult(object _object) { btParser.setSym1(_object); }
+        public object getRhsSym(int i) { return btParser.getSym(i); }
 
-         int getRhsErrorTokenIndex(int i)
+        public int getRhsTokenIndex(int i) { return btParser.getToken(i); }
+        public IToken getRhsIToken(int i) { return prsStream.getIToken(getRhsTokenIndex(i)); }
+        
+        public int getRhsFirstTokenIndex(int i) { return btParser.getFirstToken(i); }
+        public IToken getRhsFirstIToken(int i) { return prsStream.getIToken(getRhsFirstTokenIndex(i)); }
+
+        public int getRhsLastTokenIndex(int i) { return btParser.getLastToken(i); }
+        public IToken getRhsLastIToken(int i) { return prsStream.getIToken(getRhsLastTokenIndex(i)); }
+
+        public int getLeftSpan() { return btParser.getFirstToken(); }
+        public IToken getLeftIToken()  { return prsStream.getIToken(getLeftSpan()); }
+
+        public int getRightSpan() { return btParser.getLastToken(); }
+        public IToken getRightIToken() { return prsStream.getIToken(getRightSpan()); }
+
+        public int getRhsErrorTokenIndex(int i)
         {
-            int index = btParser->getToken(i);
-            IToken* err = prsStream->getIToken(index);
-            return ( dynamic_cast<ErrorToken*>(err) ? index : 0);
+            int index = btParser.getToken(i);
+            IToken err = prsStream.getIToken(index);
+            return (err is ErrorToken ? index : 0);
         }
-         ErrorToken * getRhsErrorIToken(int i)
+        public ErrorToken getRhsErrorIToken(int i)
         {
-            int index = btParser->getToken(i);
-            IToken* err = prsStream->getIToken(index);
-            return (ErrorToken*) ( dynamic_cast<ErrorToken*>(err) ? err : nullptr);
+            int index = btParser.getToken(i);
+            IToken err = prsStream.getIToken(index);
+            return (ErrorToken) (err is ErrorToken ? err : null);
         }
 
-         void reset(ILexStream* lexStream)
+        public void reset(ILexStream lexStream)
         {
-            delete prsStream;
             prsStream = new PrsStream(lexStream);
-            btParser->reset(prsStream);
+            btParser.reset(prsStream);
 
             try
             {
-                prsStream->remapTerminalSymbols(orderedTerminalSymbols(), prsTable->getEoftSymbol());
+                prsStream.remapTerminalSymbols(orderedTerminalSymbols(), prsTable.getEoftSymbol());
             }
-            catch (NullExportedSymbolsException& e) {
+            catch (NullExportedSymbolsException e) {
             }
-            catch (NullTerminalSymbolsException& e) {
+            catch (NullTerminalSymbolsException e) {
             }
-            catch (UnimplementedTerminalsException& e)
+            catch (UnimplementedTerminalsException e)
             {
                 if (unimplementedSymbolsWarning) {
-                   auto unimplemented_symbols = e.getSymbols();
-                    std::cout << "The Lexer will not scan the following token(s):" << std::endl;
+                    LPG2.Runtime.ArrayList<int> unimplemented_symbols = e.getSymbols();
+                     Console.Out.WriteLine("The Lexer will not scan the following token(s):");
                     for (int i = 0; i < unimplemented_symbols.size(); i++)
                     {
-                        auto id = unimplemented_symbols.at(i);
-                        std::wcout <<L"    " << $sym_type::orderedTerminalSymbols[id] << std::endl;               
+                         id = unimplemented_symbols.get(i);
+                         Console.Out.WriteLine("    " + $sym_type.orderedTerminalSymbols[id]);               
                     }
-                   std::cout <<std::endl;  
+                     Console.Out.WriteLine();
                 }
             }
-            catch (UndefinedEofSymbolException& e)
+            catch (UndefinedEofSymbolException e)
             {
-                std::stringex str= "The Lexer does not implement the Eof symbol ";
-                str += IcuUtil::ws2s($sym_type::orderedTerminalSymbols[prsTable->getEoftSymbol()]);
-                throw  UndefinedEofSymbolException(str);
+                throw new Error(new UndefinedEofSymbolException
+                                    ("The Lexer does not implement the Eof symbol " +
+                                     $sym_type.orderedTerminalSymbols[prsTable.getEoftSymbol()]));
             } 
         }
         
-         $action_type(ILexStream* lexStream = nullptr)
+        public $action_type()
         {
             try
             {
-                btParser = new BacktrackingParser(prsStream, prsTable,  this);
+                btParser = new BacktrackingParser(prsStream, prsTable, (RuleAction) this);
             }
-            catch (NotBacktrackParseTableException& e)
+            catch (NotBacktrackParseTableException e)
             {
-                throw ( NotBacktrackParseTableException
-                                    ("Regenerate $prs_type.java with -BACKTRACK option"));
+                throw new Error(new NotBacktrackParseTableException
+                                    ("Regenerate $prs_type.cs with -BACKTRACK option"));
             }
-            catch (BadParseSymFileException& e)
+            catch (BadParseSymFileException e)
             {
-                throw ( BadParseSymFileException("Bad Parser Symbol File -- $sym_type::java"));
-            }
-
-            if(lexStream)
-            {
-                reset(lexStream);
+                throw new Error(new BadParseSymFileException("Bad Parser Symbol File -- $sym_type.cs"));
             }
         }
         
-
-        
-         int numTokenKinds() { return $sym_type::numTokenKinds; }
-         std::vector<std::wstring> orderedTerminalSymbols() { 
-             return $sym_type::orderedTerminalSymbols; 
-        }
-         std::wstring getTokenKindName(int kind) { return $sym_type::orderedTerminalSymbols[kind]; }
-         int getEOFTokenKind() { return prsTable->getEoftSymbol(); }
-         IPrsStream* getIPrsStream() { return prsStream; }
-
-        /**
-         * @deprecated replaced by {@link #getIPrsStream()}
-         *
-         */
-         PrsStream* getPrsStream() { return prsStream; }
-
-        /**
-         * @deprecated replaced by {@link #getIPrsStream()}
-         *
-         */
-         PrsStream* getParseStream() { return prsStream; }
-
-         $ast_class* parser()
+        public $action_type(ILexStream lexStream):this()
         {
-            return parser(nullptr, 0);
+            
+            reset(lexStream);
         }
         
-         $ast_class* parser(Monitor* monitor)
+        public int numTokenKinds() { return $sym_type.numTokenKinds; }
+        public string[] orderedTerminalSymbols() { return $sym_type.orderedTerminalSymbols; }
+        public string getTokenKindName(int kind) { return $sym_type.orderedTerminalSymbols[kind]; }
+        public int getEOFTokenKind() { return prsTable.getEoftSymbol(); }
+        public IPrsStream getIPrsStream() { return prsStream; }
+
+        /**
+         * @deprecated replaced by {@link #getIPrsStream()}
+         *
+         */
+        public PrsStream getPrsStream() { return prsStream; }
+
+        /**
+         * @deprecated replaced by {@link #getIPrsStream()}
+         *
+         */
+        public PrsStream getParseStream() { return prsStream; }
+
+        public $ast_class parser()
+        {
+            return parser(null, 0);
+        }
+        
+        public $ast_class parser(Monitor monitor)
         {
             return parser(monitor, 0);
         }
         
-         $ast_class * parser(int error_repair_count)
+        public $ast_class parser(int error_repair_count)
         {
-            return parser(nullptr, error_repair_count);
+            return parser(null, error_repair_count);
         }
 
-         $ast_class * parser(Monitor* monitor, int error_repair_count)
+        public $ast_class parser(Monitor monitor, int error_repair_count)
         {
-            btParser->setMonitor(monitor);
+            btParser.setMonitor(monitor);
             
             try
             {
-                return ($ast_class *) btParser->fuzzyParse(error_repair_count);
+                return ($ast_class) btParser.fuzzyParse(error_repair_count);
             }
-            catch (BadParseException& e)
+            catch (BadParseException e)
             {
-                prsStream->reset(e.error_token); // point to error token
+                prsStream.reset(e.error_token); // point to error token
 
-                std::shared_ptr< DiagnoseParser> diagnoseParser = std::make_shared<DiagnoseParser>(prsStream, prsTable);
-                diagnoseParser->diagnose(e.error_token);
+                DiagnoseParser diagnoseParser = new DiagnoseParser(prsStream, prsTable);
+                diagnoseParser.diagnose(e.error_token);
             }
 
-            return nullptr;
+            return null;
         }
-         void ruleAction(int ruleNumber);
+
         //
         // Additional entry points, if any
         //
@@ -357,17 +327,14 @@
 %End
 
 %Rules
-    /!$BeginActions!/
+    /.$BeginActions./
 %End
 
 %Trailers
     /.
-    };
-    ./
-
-     /!
         $EndActions
-    !/
+    }
+    ./
 %End
 
 --

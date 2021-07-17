@@ -4,11 +4,11 @@ using System.Text;
 
 namespace LPG2.Runtime
 {
-   public class ArrayList : System.Collections.ArrayList
+   public class ArrayList<T> : System.Collections.ArrayList
     {
-        public object get(int i)
+        public T get(int i)
         {
-            return base[i];
+            return (T)base[i];
         }
 
         public int size()
@@ -16,7 +16,7 @@ namespace LPG2.Runtime
             return base.Count;
         }
 
-        public void add(object o)
+        public void add(T o)
         {
             base.Add(o);
         }
@@ -25,5 +25,7 @@ namespace LPG2.Runtime
         {
             base.RemoveAt(i);
         }
+
+ 
     }
 }

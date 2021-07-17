@@ -10,7 +10,6 @@
 %End
 %Headers
     /.
-       wchar_t escape_token='$';
      ./
 %End
 %Define
@@ -618,7 +617,7 @@
                       makeToken(getRhsFirstTokenIndex($e), getRhsLastTokenIndex($e), $_SYMBOL);
                       makeToken(getRhsFirstTokenIndex($eq), getRhsLastTokenIndex($eq), $_EQUAL);
                       makeToken(getRhsFirstTokenIndex($val), getRhsLastTokenIndex($val), $_SYMBOL);
-                      escape_token = *(lexStream->getInputChars().data() + getRhsFirstTokenIndex($val));
+                      escape_token = lexStream->getInputChars()[getRhsFirstTokenIndex($val)];
             $EndJava
           ./
    escape ::= eE sS cC aA pP eE

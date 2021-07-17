@@ -5,8 +5,8 @@ namespace LPG2.Runtime
     {
     public int size();
     public T getElementAt(int i);
-    public ArrayList getList();
+    public ArrayList<T> getList();
     public void add(T elt);
-    public ArrayList getAllChildren();
+    public ArrayList<T> getAllChildren();
     }
 }

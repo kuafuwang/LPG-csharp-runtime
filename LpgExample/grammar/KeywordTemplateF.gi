@@ -11,10 +11,10 @@
 --
 -- B E G I N N I N G   O F   T E M P L A T E   KeywordTemplateF (Similar to KeywordTemplateD)
 --
-%Options Programming_Language=rt_cpp,margin=4
+%Options Programming_Language=csharp,margin=4
 %Options table
-%options action-block=("*.h", "/.", "./")
-%options ParseTable=ParseTable
+%options action-block=("*.cs", "/.", "./")
+%options ParseTable=LPG2.Runtime.ParseTable
 %Options prefix=Char_
 %Options single-productions
 
@@ -31,7 +31,7 @@
     --
     -- Macro that may be respecified in an instance of this template
     --
-    $eof_char /.$sym_type$::$prefix$EOF$suffix$./
+    $eof_char /.$sym_type$.$prefix$EOF$suffix$./
 
     --
     -- Macros useful for specifying actions
@@ -55,110 +55,67 @@
 %End
 
 %Globals
-    /.
+    /.import lpg.runtime.*;
     ./
 %End
 
 %Headers
     /.
-	#include "tuple.h"
-	 struct  $action_type :public $prs_type
-	{
-		 shared_ptr_wstring inputChars;
-         shared_ptr_string inputBytes;
-		 static  constexpr int  keywordKindLenth = $num_rules + 1;
-		 int keywordKind[keywordKindLenth]={};
-		 int* getKeywordKinds() { return keywordKind; }
-        int lexer_Wchart(int curtok, int lasttok)
-		{
-			 int current_kind = getKind(inputChars[curtok]),
-				 act;
+    public class $action_type : $prs_type
+    {
+        private char[] inputChars;
+        private const int keywordKind[] = new int[$num_rules + 1];
 
-			 for (act = tAction(START_STATE, current_kind);
-				 act > NUM_RULES && act < ACCEPT_ACTION;
-				 act = tAction(act, current_kind))
-			 {
-				 curtok++;
-				 current_kind = (curtok > lasttok
-					 ? $eof_char
-					 : getKind(inputChars[curtok]));
-			 }
+        public int[] getKeywordKinds() { return keywordKind; }
 
-			 if (act > ERROR_ACTION)
-			 {
-				 curtok++;
-				 act -= ERROR_ACTION;
-			 }
+        public int lexer(int curtok, int lasttok)
+        {
+            int current_kind = getKind(inputChars[curtok]),
+                act;
 
-			 return keywordKind[act == ERROR_ACTION || curtok <= lasttok ? 0 : act];
-		 }
-         int lexer(int curtok, int lasttok){
-            if(inputBytes.size()){
-                return lexerBytes(curtok,lasttok);
+            for (act = tAction(START_STATE, current_kind);
+                 act > NUM_RULES && act < ACCEPT_ACTION;
+                 act = tAction(act, current_kind))
+            {
+                curtok++;
+                current_kind = (curtok > lasttok
+                                       ? $eof_char
+                                       : getKind(inputChars[curtok]));
             }
-            else if(inputChars.size()){
-                 return lexer_Wchart(curtok,lasttok);
+
+            if (act > ERROR_ACTION)
+            {
+                curtok++;
+                act -= ERROR_ACTION;
             }
-            else{
-                return 0;
-            }
-         }
-		 int lexerBytes(int curtok, int lasttok)
-		 {
-			 int current_kind = getKind(inputBytes[curtok]),
-				 act;
 
-			 for (act = tAction(START_STATE, current_kind);
-				 act > NUM_RULES && act < ACCEPT_ACTION;
-				 act = tAction(act, current_kind))
-			 {
-				 curtok++;
-				 current_kind = (curtok > lasttok
-					 ? $eof_char
-					 : getKind(inputBytes[curtok]));
-			 }
-
-			 if (act > ERROR_ACTION)
-			 {
-				 curtok++;
-				 act -= ERROR_ACTION;
-			 }
-
-			 return keywordKind[act == ERROR_ACTION || curtok <= lasttok ? 0 : act];
-		 }
-
-		 void setInput(shared_ptr_wstring inputChars) { this->inputChars = inputChars; }
-		 void setInput(shared_ptr_string inputBytes) { this->inputBytes = inputBytes; }
-        $action_type(shared_ptr_wstring inputChars, int identifierKind){
-             this->inputChars = inputChars;
-             initialize(identifierKind);
+            return keywordKind[act == ERROR_ACTION  || curtok <= lasttok ? 0 : act];
         }
-        $action_type(shared_ptr_string input, int identifierKind){
-             this->inputBytes = input;
-             initialize(identifierKind);
-        }
+
+        public void setInputChars(char[] inputChars) { this.inputChars = inputChars; }
+
     ./
 %End
 
 %Rules
     /.
 
-        void initialize(int identifierKind)
+        public $action_type(char[] inputChars, int identifierKind)
         {
-           
+            this.inputChars = inputChars;
             keywordKind[0] = identifierKind;
     ./
 %End
 
 %Trailers
     /.
-            for (int i = 0; i < keywordKindLenth; i++)
+            for (int i = 0; i < keywordKind.Length; i++)
             {
                 if (keywordKind[i] == 0)
                     keywordKind[i] = identifierKind;
             }
         }
-    };
+    }
     ./
 %End
 

@@ -13,8 +13,8 @@ namespace LPG2.Runtime
     {
     private ILexStream iLexStream;
     private int[] kindMap = null;
-    private ArrayList tokens = new ArrayList();
-    private ArrayList adjuncts = new ArrayList();
+    private LPG2.Runtime.ArrayList<object> tokens = new LPG2.Runtime.ArrayList<object>();
+    private LPG2.Runtime.ArrayList<object> adjuncts = new LPG2.Runtime.ArrayList<object>();
     private int index = 0;
     private int len = 0;
 
@@ -53,7 +53,7 @@ namespace LPG2.Runtime
             throw new NullExportedSymbolsException();
         if (ordered_parser_symbols == null)
             throw new NullTerminalSymbolsException();
-        ArrayList unimplemented_symbols = new ArrayList();
+        ArrayList<int> unimplemented_symbols = new ArrayList<int>();
         if (ordered_lexer_symbols != ordered_parser_symbols)
         {
             kindMap = new int[ordered_lexer_symbols.Length];
@@ -86,10 +86,10 @@ namespace LPG2.Runtime
 
     public void resetTokenStream()
     {
-        tokens = new ArrayList();
+        tokens = new ArrayList<object>();
         index = 0;
 
-        adjuncts = new ArrayList();
+        adjuncts = new ArrayList<object>();
     }
 
     public void setLexStream(ILexStream lexStream)
