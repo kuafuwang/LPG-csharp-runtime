@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace LPG2.Runtime
 {
 
@@ -5,8 +7,8 @@ namespace LPG2.Runtime
     {
     public int size();
     public T getElementAt(int i);
-    public ArrayList<T> getList();
-    public void add(T elt);
-    public ArrayList<T> getAllChildren();
+    public ArrayList getList();
+    public bool add(T elt);
+    public ArrayList getAllChildren();
     }
 }

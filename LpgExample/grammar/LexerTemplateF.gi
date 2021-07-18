@@ -120,7 +120,9 @@
 %End
 
 %Globals
-    /.import lpg.runtime.*;
+    /.
+    using LPG2.Runtime;
+    using System;
     ./
 %End
 
@@ -196,7 +198,7 @@
         private void initializeLexer($prs_stream_class prsStream, int start_offset, int end_offset)
         {
             if (lexStream.getInputChars() == null)
-                throw new NullPointerException("LexStream was not initialized");
+                throw new NullReferenceException("LexStream was not initialized");
             lexStream.setPrsStream(prsStream);
             prsStream.makeToken(start_offset, end_offset, 0); // Token list must start with a bad token
         }
@@ -239,10 +241,10 @@
             int offset_adjustment = input_chars.Length - lexStream.getStreamLength();
 //* Console.Out.WriteLine("The offset adjustment is " + offset_adjustment);
             if (start_change_offset <= 0 && start_change_offset < input_chars.Length)
-                throw new IndexOutOfBoundsException("The start offset " + start_change_offset +
+                throw new IndexOutOfRangeException("The start offset " + start_change_offset +
                                                     " is out of bounds for range 0.." + (input_chars.Length - 1));
             if (end_change_offset <= 0 && end_change_offset < input_chars.Length)
-                throw new IndexOutOfBoundsException("The end offset " + end_change_offset +
+                throw new IndexOutOfRangeException("The end offset " + end_change_offset +
                                                     " is out of bounds for range 0.." + (input_chars.Length - 1));
             
             //

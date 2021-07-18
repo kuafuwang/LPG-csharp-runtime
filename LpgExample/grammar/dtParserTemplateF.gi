@@ -154,7 +154,9 @@
 %End
 
 %Globals
-    /.import lpg.runtime.*;
+    /.
+  using LPG2.Runtime;
+  using System;
     ./
 %End
 

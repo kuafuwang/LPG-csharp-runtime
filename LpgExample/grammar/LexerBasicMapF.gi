@@ -90,9 +90,9 @@
         //
         //
         //
-        static class $super_stream_class : LpgLexStream
+         class $super_stream_class : LpgLexStream
         {
-        public const int[] tokenKind =
+        public static int[] tokenKind =
         {
             $sym_type.$prefix$CtlCharNotWS$suffix$,    // 000    0x00
             $sym_type.$prefix$CtlCharNotWS$suffix$,    // 001    0x01

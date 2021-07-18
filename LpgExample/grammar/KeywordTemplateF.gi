@@ -55,7 +55,9 @@
 %End
 
 %Globals
-    /.import lpg.runtime.*;
+    /.
+    using LPG2.Runtime;
+    using System;
     ./
 %End
 
@@ -64,7 +66,7 @@
     public class $action_type : $prs_type
     {
         private char[] inputChars;
-        private const int keywordKind[] = new int[$num_rules + 1];
+        private  int[] keywordKind = new int[$num_rules + 1];
 
         public int[] getKeywordKinds() { return keywordKind; }
 

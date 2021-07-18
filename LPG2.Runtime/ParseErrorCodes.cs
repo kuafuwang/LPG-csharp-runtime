@@ -3,7 +3,7 @@ namespace LPG2.Runtime
 
 public class  ParseErrorCodes
 {
-    public  const int  LEX_ERROR_CODE = 0,
+    public   const int  LEX_ERROR_CODE = 0,
                              ERROR_CODE = 1,
                              BEFORE_CODE = 2,
                              INSERTION_CODE = 3,

@@ -1,9 +1,9 @@
 %options la=6
-%options automatic_ast=toplevel,ast_type=ASTNode,visitor=preorder,parent_saved
+%options automatic_ast=nested,ast_type=ASTNode,visitor=preorder,parent_saved
 %options template= btParserTemplateF.gi
 %options import_terminals=LPGLexer.gi
-%options ast_directory=./ast
-
+--%options ast_directory=./Ast
+%options package=Lpg.server
 %Globals
     /.
        using System;
