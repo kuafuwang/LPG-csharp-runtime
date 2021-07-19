@@ -1,12 +1,13 @@
 %options la=6
-%options automatic_ast=nested,ast_type=ASTNode,visitor=preorder,parent_saved
-%options template= btParserTemplateF.gi
+%options automatic_ast=toplevel,ast_type=ASTNode,visitor=preorder,parent_saved
+%options template= dtParserTemplateF.gi
 %options import_terminals=LPGLexer.gi
---%options ast_directory=./Ast
-%options package=Lpg.server
+%options ast_directory=./Ast
+%options package=LpgExample
+
 %Globals
     /.
-       using System;
+    
      ./
 %End
 
@@ -43,10 +44,7 @@
 %Rules
     LPG ::= options_segment LPG_INPUT
     /.
-       
-        void initialize() {
-            
-        }
+
      ./
 
     LPG_INPUT$$LPG_item ::= %empty

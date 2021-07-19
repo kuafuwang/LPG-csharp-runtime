@@ -104,9 +104,9 @@ namespace LPG2.Runtime
 
         byte[] getInputBytes();
 
-        string toString(int first_token, int last_token);
+        string ToString(int first_token, int last_token);
 
-        string toString(IToken t1, IToken t2);
+        string ToString(IToken t1, IToken t2);
 
         int getTokenIndexAtCharacter(int offset);
 

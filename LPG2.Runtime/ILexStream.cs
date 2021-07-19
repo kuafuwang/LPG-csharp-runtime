@@ -41,6 +41,6 @@ namespace LPG2.Runtime
         void reportLexicalError(int errorCode, int left_loc, int right_loc, int error_left_loc, int error_right_loc,
             string[] errorInfo);
 
-        string toString(int startOffset, int endOffset);
+        string ToString(int startOffset, int endOffset);
     }
 }

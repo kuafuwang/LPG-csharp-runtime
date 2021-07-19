@@ -9,32 +9,32 @@ namespace LPG2.Runtime
 //
 // PrsStream holds an arraylist of tokens "lexed" from the input stream.
 //
-    public class PrsStream : ParseErrorCodes,IPrsStream
+    public    class PrsStream : IPrsStream
     {
     private ILexStream iLexStream;
     private int[] kindMap = null;
-    private LPG2.Runtime.ArrayList<object> tokens = new LPG2.Runtime.ArrayList<object>();
-    private LPG2.Runtime.ArrayList<object> adjuncts = new LPG2.Runtime.ArrayList<object>();
+    private LPG2.Runtime.ArrayListEx<object> tokens = new LPG2.Runtime.ArrayListEx<object>();
+    private LPG2.Runtime.ArrayListEx<object> adjuncts = new LPG2.Runtime.ArrayListEx<object>();
     private int index = 0;
     private int len = 0;
 
-    public PrsStream()
+    public   PrsStream()
     {
     }
 
-    public PrsStream(ILexStream iLexStream)
+    public   PrsStream(ILexStream iLexStream)
     {
         this.iLexStream = iLexStream;
         if (iLexStream != null) iLexStream.setPrsStream(this);
         resetTokenStream();
     }
 
-    public string[] orderedExportedSymbols()
+    public virtual    string[] orderedExportedSymbols()
     {
         return null;
     }
 
-    public void remapTerminalSymbols(string[] ordered_parser_symbols, int eof_symbol)
+    public virtual    void remapTerminalSymbols(string[] ordered_parser_symbols, int eof_symbol)
 
     //throws UndefinedEofSymbolException,
     //    NullExportedSymbolsException,
@@ -53,7 +53,7 @@ namespace LPG2.Runtime
             throw new NullExportedSymbolsException();
         if (ordered_parser_symbols == null)
             throw new NullTerminalSymbolsException();
-        ArrayList<int> unimplemented_symbols = new ArrayList<int>();
+        ArrayListEx<int> unimplemented_symbols = new ArrayListEx<int>();
         if (ordered_lexer_symbols != ordered_parser_symbols)
         {
             kindMap = new int[ordered_lexer_symbols.Length];
@@ -80,34 +80,34 @@ namespace LPG2.Runtime
             throw new UnimplementedTerminalsException(unimplemented_symbols);
     }
 
-    public  int mapKind(int kind) {
+    public virtual    int mapKind(int kind) {
         return (kindMap == null ? kind : kindMap[kind]);
     }
 
-    public void resetTokenStream()
+    public virtual    void resetTokenStream()
     {
-        tokens = new ArrayList<object>();
+        tokens = new ArrayListEx<object>();
         index = 0;
 
-        adjuncts = new ArrayList<object>();
+        adjuncts = new ArrayListEx<object>();
     }
 
-    public void setLexStream(ILexStream lexStream)
+    public virtual    void setLexStream(ILexStream lexStream)
     {
         this.iLexStream = lexStream;
         resetTokenStream();
     }
 
-    /**
-     * @deprecated function
-     */
-    public void resetLexStream(LexStream lexStream)
+        /**
+         * @deprecated function
+         */
+        public virtual   void resetLexStream(LexStream lexStream)
     {
         this.iLexStream = lexStream;
         if (lexStream != null) lexStream.setPrsStream(this);
     }
 
-    public void makeToken(int startLoc, int endLoc, int kind)
+        public virtual    void makeToken(int startLoc, int endLoc, int kind)
     {
         Token token = new Token(this, startLoc, endLoc, mapKind(kind));
         token.setTokenIndex(tokens.Count);
@@ -115,7 +115,7 @@ namespace LPG2.Runtime
         token.setAdjunctIndex(adjuncts.size());
     }
 
-    public void removeLastToken()
+        public virtual    void removeLastToken()
     {
         
         int last_index = tokens.Count - 1;
@@ -126,7 +126,7 @@ namespace LPG2.Runtime
         tokens.remove(last_index);
     }
 
-    public int makeErrorToken(int firsttok, int lasttok, int errortok, int kind)
+        public virtual    int makeErrorToken(int firsttok, int lasttok, int errortok, int kind)
     {
         int index = tokens.Count; // the next index
 
@@ -150,14 +150,14 @@ namespace LPG2.Runtime
         return index;
     }
 
-    public void addToken(IToken token)
+        public virtual    void addToken(IToken token)
     {
         token.setTokenIndex(tokens.Count);
         tokens.Add(token);
         token.setAdjunctIndex(adjuncts.size());
     }
 
-    public void makeAdjunct(int startLoc, int endLoc, int kind)
+        public virtual    void makeAdjunct(int startLoc, int endLoc, int kind)
     {
         int token_index = tokens.Count - 1; // index of last token processed
         Adjunct adjunct = new Adjunct(this, startLoc, endLoc, mapKind(kind));
@@ -166,7 +166,7 @@ namespace LPG2.Runtime
         adjuncts.add(adjunct);
     }
 
-    public void addAdjunct(IToken adjunct)
+        public virtual    void addAdjunct(IToken adjunct)
     {
         int token_index = tokens.Count - 1; // index of last token processed
         adjunct.setTokenIndex(token_index);
@@ -174,76 +174,76 @@ namespace LPG2.Runtime
         adjuncts.add(adjunct);
     }
 
-    public string getTokenText(int i)
+        public virtual    string getTokenText(int i)
     {
         IToken t = (IToken) tokens.get(i);
-        return t.toString();
+        return t.ToString();
     }
 
-    public int getStartOffset(int i)
+        public virtual    int getStartOffset(int i)
     {
         IToken t = (IToken) tokens.get(i);
         return t.getStartOffset();
     }
 
-    public int getEndOffset(int i)
+    public virtual   int getEndOffset(int i)
     {
         IToken t = (IToken) tokens.get(i);
         return t.getEndOffset();
     }
 
-    public int getTokenLength(int i)
+    public virtual   int getTokenLength(int i)
     {
         IToken t = (IToken) tokens.get(i);
         return t.getEndOffset() - t.getStartOffset() + 1;
     }
 
-    public int getLineNumberOfTokenAt(int i)
+    public virtual   int getLineNumberOfTokenAt(int i)
     {
        
         IToken t = (IToken) tokens.get(i);
         return iLexStream.getLineNumberOfCharAt(t.getStartOffset());
     }
 
-    public int getEndLineNumberOfTokenAt(int i)
+    public virtual   int getEndLineNumberOfTokenAt(int i)
     {
         IToken t = (IToken) tokens.get(i);
         return iLexStream.getLineNumberOfCharAt(t.getEndOffset());
     }
 
-    public int getColumnOfTokenAt(int i)
+    public virtual   int getColumnOfTokenAt(int i)
     {
         IToken t = (IToken) tokens.get(i);
         return iLexStream.getColumnOfCharAt(t.getStartOffset());
     }
 
-    public int getEndColumnOfTokenAt(int i)
+    public virtual   int getEndColumnOfTokenAt(int i)
     {
         IToken t = (IToken) tokens.get(i);
         return iLexStream.getColumnOfCharAt(t.getEndOffset());
     }
 
-    public string[] orderedTerminalSymbols()
+    public virtual   string[] orderedTerminalSymbols()
     {
         return null;
     }
 
-    public int getLineOffset(int i)
+    public virtual   int getLineOffset(int i)
     {
         return iLexStream.getLineOffset(i);
     }
 
-    public int getLineCount()
+    public virtual   int getLineCount()
     {
         return iLexStream.getLineCount();
     }
 
-    public int getLineNumberOfCharAt(int i)
+    public virtual   int getLineNumberOfCharAt(int i)
     {
         return iLexStream.getLineNumberOfCharAt(i);
     }
 
-    public int getColumnOfCharAt(int i)
+    public virtual   int getColumnOfCharAt(int i)
     {
         return getColumnOfCharAt(i);
     }
@@ -252,12 +252,12 @@ namespace LPG2.Runtime
      * @deprecated replaced by {@link #getFirstRealToken()}
      *
      */
-    public int getFirstErrorToken(int i)
+    public virtual   int getFirstErrorToken(int i)
     {
         return getFirstRealToken(i);
     }
 
-    public int getFirstRealToken(int i)
+    public virtual   int getFirstRealToken(int i)
     {
         while (i >= len)
             i = ((ErrorToken) tokens.get(i)).getFirstRealToken().getTokenIndex();
@@ -268,12 +268,12 @@ namespace LPG2.Runtime
      * @deprecated replaced by {@link #getLastRealToken()}
      *
      */
-    public int getLastErrorToken(int i)
+    public virtual   int getLastErrorToken(int i)
     {
         return getLastRealToken(i);
     }
 
-    public int getLastRealToken(int i)
+    public virtual   int getLastRealToken(int i)
     {
         while (i >= len)
             i = ((ErrorToken) tokens.get(i)).getLastRealToken().getTokenIndex();
@@ -281,7 +281,7 @@ namespace LPG2.Runtime
     }
 
     // TODO: should this function throw an exception instead of returning null?
-    public char[] getInputChars()
+    public virtual   char[] getInputChars()
     {
         return (iLexStream is LexStream
             ? ((LexStream) iLexStream).getInputChars()
@@ -289,24 +289,24 @@ namespace LPG2.Runtime
     }
 
     // TODO: should this function throw an exception instead of returning null?
-    public byte[] getInputBytes()
+    public virtual   byte[] getInputBytes()
     {
         return (iLexStream is Utf8LexStream
             ? ((Utf8LexStream) iLexStream).getInputBytes()
             : null);
     }
 
-    public string toString(int first_token, int last_token)
+    public virtual   string ToString(int first_token, int last_token)
     {
-        return toString((IToken) tokens.get(first_token), (IToken) tokens.get(last_token));
+        return ToString((IToken) tokens.get(first_token), (IToken) tokens.get(last_token));
     }
 
-    public string toString(IToken t1, IToken t2)
+    public virtual   string ToString(IToken t1, IToken t2)
     {
-        return iLexStream.toString(t1.getStartOffset(), t2.getEndOffset());
+        return iLexStream.ToString(t1.getStartOffset(), t2.getEndOffset());
     }
 
-    public int getSize()
+    public virtual   int getSize()
     {
         return tokens.Count;
     }
@@ -315,7 +315,7 @@ namespace LPG2.Runtime
      * @deprecated replaced by {@link #setStreamLength()}
      *
      */
-    public void setSize()
+    public  virtual void setSize()
     {
         len = tokens.Count;
     }
@@ -326,7 +326,7 @@ namespace LPG2.Runtime
     // not exist, it returns the negation of the index of the 
     // element immediately preceding the offset.
     //
-    public int getTokenIndexAtCharacter(int offset)
+    public virtual   int getTokenIndexAtCharacter(int offset)
     {
         int low = 0,
             high = tokens.Count;
@@ -345,53 +345,53 @@ namespace LPG2.Runtime
         return -(low - 1);
     }
 
-    public IToken getTokenAtCharacter(int offset)
+    public virtual   IToken getTokenAtCharacter(int offset)
     {
         int tokenIndex = getTokenIndexAtCharacter(offset);
         return (tokenIndex < 0) ? null : getTokenAt(tokenIndex);
     }
 
-    public IToken getTokenAt(int i)
+    public virtual   IToken getTokenAt(int i)
     {
         return (IToken) tokens.get(i);
     }
 
-    public IToken getIToken(int i)
+    public virtual   IToken getIToken(int i)
     {
         return (IToken) tokens.get(i);
     }
 
-    public ArrayList getTokens()
+    public virtual   ArrayList getTokens()
     {
         return tokens;
     }
 
-    public int getStreamIndex()
+    public virtual   int getStreamIndex()
     {
         return index;
     }
 
-    public int getStreamLength()
+    public virtual   int getStreamLength()
     {
         return len;
     }
 
-    public void setStreamIndex(int index)
+    public virtual   void setStreamIndex(int index)
     {
         this.index = index;
     }
 
-    public void setStreamLength()
+    public virtual   void setStreamLength()
     {
         this.len = tokens.Count;
     }
 
-    public void setStreamLength(int len)
+    public virtual   void setStreamLength(int len)
     {
         this.len = len;
     }
 
-    public ILexStream getILexStream()
+    public virtual   ILexStream getILexStream()
     {
         return iLexStream;
     }
@@ -399,19 +399,19 @@ namespace LPG2.Runtime
     /**
      * @deprecated replaced by {@link #getILexStream()}
      */
-    public ILexStream getLexStream()
+    public virtual   ILexStream getLexStream()
     {
         return iLexStream;
     }
 
-    public void dumpTokens()
+    public virtual   void dumpTokens()
     {
         if (getSize() <= 2) return;
         Console.Out.WriteLine(" Kind \tOffset \tLen \tLine \tCol \tText\n");
         for (int i = 1; i < getSize() - 1; i++) dumpToken(i);
     }
 
-    public void dumpToken(int i)
+    public virtual   void dumpToken(int i)
     {
        Console.Out.Write(" (" + getKind(i) + ")");
        Console.Out.Write(" \t" + getStartOffset(i));
@@ -438,17 +438,17 @@ namespace LPG2.Runtime
     //
     // Return an iterator for the adjuncts that follow token i.
     //
-    public IToken[] getFollowingAdjuncts(int i)
+    public virtual   IToken[] getFollowingAdjuncts(int i)
     {
         return getAdjuncts(i);
     }
 
-    public IToken[] getPrecedingAdjuncts(int i)
+    public virtual   IToken[] getPrecedingAdjuncts(int i)
     {
         return getAdjuncts(getPrevious(i));
     }
 
-    public ArrayList getAdjuncts()
+    public virtual   ArrayList getAdjuncts()
     {
         return adjuncts;
     }
@@ -456,84 +456,84 @@ namespace LPG2.Runtime
     //
     // Methods that implement the TokenStream Interface
     //
-    public int getToken()
+    public virtual   int getToken()
     {
         index = getNext(index);
         return index;
     }
 
-    public int getToken(int end_token)
+    public virtual   int getToken(int end_token)
     {
         return index = (index < end_token ? getNext(index) : len - 1);
     }
 
-    public int getKind(int i)
+    public virtual   int getKind(int i)
     {
         IToken t = (IToken) tokens.get(i);
         return t.getKind();
     }
 
-    public int getNext(int i)
+    public virtual   int getNext(int i)
     {
         return (++i < len ? i : len - 1);
     }
 
-    public int getPrevious(int i)
+    public virtual   int getPrevious(int i)
     {
         return (i <= 0 ? 0 : i - 1);
     }
 
-    public string getName(int i)
+    public virtual   string getName(int i)
     {
         return getTokenText(i);
     }
 
-    public int peek()
+    public virtual   int peek()
     {
         return getNext(index);
     }
 
-    public void reset(int i)
+    public virtual   void reset(int i)
     {
         index = getPrevious(i);
     }
 
-    public void reset()
+    public virtual   void reset()
     {
         index = 0;
     }
 
-    public int badToken()
+    public virtual   int badToken()
     {
         return 0;
     }
 
-    public int getLine(int i)
+    public virtual   int getLine(int i)
     {
         return getLineNumberOfTokenAt(i);
     }
 
-    public int getColumn(int i)
+    public virtual   int getColumn(int i)
     {
         return getColumnOfTokenAt(i);
     }
 
-    public int getEndLine(int i)
+    public virtual   int getEndLine(int i)
     {
         return getEndLineNumberOfTokenAt(i);
     }
 
-    public int getEndColumn(int i)
+    public virtual   int getEndColumn(int i)
     {
         return getEndColumnOfTokenAt(i);
     }
 
-    public bool afterEol(int i)
+    public virtual   bool afterEol(int i)
     {
         return (i < 1 ? true : getEndLineNumberOfTokenAt(i - 1) < getLineNumberOfTokenAt(i));
     }
 
-    public string getFileName()
+    public virtual   string getFileName()
     {
         return iLexStream.getFileName();
     }
@@ -548,17 +548,17 @@ namespace LPG2.Runtime
     //
     // IMessageHandler errMsg = null; // the error message handler object is declared in LexStream
     //
-    public void setMessageHandler(IMessageHandler errMsg)
+    public virtual   void setMessageHandler(IMessageHandler errMsg)
     {
         iLexStream.setMessageHandler(errMsg);
     }
 
-    public IMessageHandler getMessageHandler()
+    public virtual   IMessageHandler getMessageHandler()
     {
         return iLexStream.getMessageHandler();
     }
 
-    public void reportError(int errorCode, int leftToken, int rightToken, string errorInfo)
+    public virtual   void reportError(int errorCode, int leftToken, int rightToken, string errorInfo)
     {
         // if (errorCode == DELETION_CODE ||
         //    errorCode == MISPLACED_CODE) tokenText = "";
@@ -569,7 +569,7 @@ namespace LPG2.Runtime
             errorInfo == null ? null : new string[] {errorInfo});
     }
 
-    public void reportError(int errorCode, int leftToken, int rightToken, string[] errorInfo)
+    public virtual   void reportError(int errorCode, int leftToken, int rightToken, string[] errorInfo)
     {
         // if (errorCode == DELETION_CODE ||
         //    errorCode == MISPLACED_CODE) tokenText = "";
@@ -580,7 +580,7 @@ namespace LPG2.Runtime
             errorInfo);
     }
 
-    public void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string errorInfo)
+    public virtual   void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string errorInfo)
     {
         reportError(errorCode,
             leftToken,
@@ -589,7 +589,7 @@ namespace LPG2.Runtime
             errorInfo == null ? null : new string[] {errorInfo});
     }
 
-    public void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string[] errorInfo)
+    public virtual   void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string[] errorInfo)
     {
         iLexStream.reportLexicalError(errorCode,
             getStartOffset(leftToken),

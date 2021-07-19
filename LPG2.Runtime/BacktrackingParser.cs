@@ -542,7 +542,7 @@ public class BacktrackingParser : Stacks
             {
                 stateStack[++stateStackTop] = act;
             }
-            catch(IndexOutOfRangeException e)
+            catch(IndexOutOfRangeException )
             {
                 reallocateStateStack();
                 stateStack[stateStackTop] = act;
@@ -770,7 +770,7 @@ public class BacktrackingParser : Stacks
 
                 stateStack[++stateStackTop] = act;
             }
-            catch(IndexOutOfRangeException e)
+            catch(IndexOutOfRangeException )
             {
                 reallocateStateStack();
                 stateStack[stateStackTop] = act;

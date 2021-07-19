@@ -796,7 +796,7 @@ namespace LPG2.Runtime
                 {
                     tempStack[++tempStackTop] = act;
                 }
-                catch (IndexOutOfRangeException e)
+                catch (IndexOutOfRangeException)
                 {
                     reallocateStacks();
                     tempStack[tempStackTop] = act;
@@ -905,7 +905,7 @@ namespace LPG2.Runtime
                 {
                     tempStack[++tempStackTop] = act;
                 }
-                catch (IndexOutOfRangeException e)
+                catch (IndexOutOfRangeException)
                 {
                     reallocateStacks();
                     tempStack[tempStackTop] = act;

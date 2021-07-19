@@ -32,10 +32,11 @@ public class DifferTokens : Differ
 
         public  int size() { return name.Length; }
 
-        public  int hashCode() { return hash_code; }
+        public  override int GetHashCode() { return hash_code; }
 
-        public  bool equals(object anObject)
+        public override bool Equals(object anObject)
         {
+          
             if (this == anObject)
                 return true;
 
@@ -52,7 +53,7 @@ public class DifferTokens : Differ
         public  int getStartColumn() { return start_column; }
         public  int getEndLine() { return end_line; }
         public  int getEndColumn() { return end_column; }
-        public  string toString() { return this.name; }
+        public override string ToString() { return this.name; }
     }
 
     protected DifferTokens() {}

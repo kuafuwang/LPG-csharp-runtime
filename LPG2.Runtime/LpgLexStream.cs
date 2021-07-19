@@ -11,7 +11,7 @@ namespace LPG2.Runtime
  * @author fisher
  *
  */
-public abstract class LpgLexStream : LexStream
+public  class LpgLexStream : LexStream
 {
     /**
      * 

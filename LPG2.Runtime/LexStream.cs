@@ -12,7 +12,7 @@ namespace LPG2.Runtime
 // The lexparser "token" is implemented simply as the index of the next character in the array.
 // The user must subclass LexStreamBase and implement the abstract methods: getKind.
 //
-public class LexStream : ParseErrorCodes, ILexStream
+public  class LexStream : ParseErrorCodes, ILexStream
 {
     const  int DEFAULT_TAB = 1;
 
@@ -121,7 +121,7 @@ public class LexStream : ParseErrorCodes, ILexStream
 
     public void setFileName(string fileName) { this.fileName = fileName; }
 
-    public string getFileName() { return fileName; }
+    public  virtual   string getFileName() { return fileName; }
 
     public void setLineOffsets(IntSegmentedTuple lineOffsets) { this.lineOffsets = lineOffsets; }
 
@@ -137,51 +137,57 @@ public class LexStream : ParseErrorCodes, ILexStream
 
     public void setStreamLength(int streamLength) { this.streamLength = streamLength; }
 
-    public int getStreamLength() { return streamLength; }
+    public virtual  int getStreamLength() { return streamLength; }
 
     public void setLineOffset(int i)
     {
         lineOffsets.add(i);
     }
 
-    public int getLineOffset(int i) { return lineOffsets.get(i); }
+    public virtual  int getLineOffset(int i) { return lineOffsets.get(i); }
 
-    public void setPrsStream(IPrsStream prsStream)
+    public virtual  void setPrsStream(IPrsStream prsStream)
     {
         prsStream.setLexStream(this);
         this.prsStream = prsStream;
     }
-    
-    public IPrsStream getIPrsStream() { return prsStream; }
+
+    public virtual  IPrsStream getIPrsStream()
+    {
+        return prsStream;
+    }
     
     /**
      * @deprecated replaced by {@link #getIPrsStream()}
      */
-    public IPrsStream getPrsStream()
+    public virtual  IPrsStream getPrsStream()
     {
         return prsStream;
     }
 
-    public virtual string[] orderedExportedSymbols() { return null; }
+    public virtual  string[] orderedExportedSymbols()
+    {
+        return null;
+    }
 
-    public char getCharValue(int i) { return inputChars[i]; }
+    public virtual  char getCharValue(int i) { return inputChars[i]; }
 
-    public int getIntValue(int i) { return inputChars[i]; }
+    public virtual  int getIntValue(int i) { return inputChars[i]; }
 
     /**
      * @deprecated replaced by {@link #getLineCount()}
      *
      */
     public int getLine() { return getLineCount(); }
-    public int getLineCount() { return lineOffsets.size() - 1; }
+    public virtual  int getLineCount() { return lineOffsets.size() - 1; }
 
-    public int getLineNumberOfCharAt(int i)
+    public virtual  int getLineNumberOfCharAt(int i)
     {
         int index = lineOffsets.binarySearch(i);
         return index < 0 ? -index : index == 0 ? 1 : index;
     }
 
-    public int getColumnOfCharAt(int i)
+    public virtual   int getColumnOfCharAt(int i)
     {
         int lineNo = getLineNumberOfCharAt(i),
             start = lineOffsets.get(lineNo - 1);
@@ -204,60 +210,64 @@ public class LexStream : ParseErrorCodes, ILexStream
     // If this is not the expected behavior then this function should 
     // be overridden.
     //
-    public int getToken() { return index = getNext(index); }
+    public virtual  int getToken() { return index = getNext(index); }
 
-    public int getToken(int end_token)
+    public virtual  int getToken(int end_token)
          { return index = (index < end_token ? getNext(index) : streamLength); }
 
     public virtual int getKind(int i) { return 0; }
 
-    /**
-     * @deprecated replaced by {@link #getNext()}
-     *
-     */
-    int next(int i) { return getNext(i); }
-    public int getNext(int i) { return (++i < streamLength ? i : streamLength); }
 
-    /**
-     * @deprecated replaced by {@link #getPrevious()}
-     *
-     */
-    int previous(int i) { return getPrevious(i); }
-    public int getPrevious(int i) { return (i <= 0 ? 0 : i - 1); }
+/**
+         * @deprecated replaced by {@link #getNext()}
+         *
+         */
+        int next(int i) { return getNext(i); }
+    public virtual  int getNext(int i) { return (++i < streamLength ? i : streamLength); }
 
-    public string getName(int i) { return i >= getStreamLength() ? "" : "" + getCharValue(i); }
+        /**
+         * @deprecated replaced by {@link #getPrevious()}
+         *
+         */ 
+        public  int previous(int i) { return getPrevious(i); }
+    public virtual  int getPrevious(int i) { return (i <= 0 ? 0 : i - 1); }
 
-    public int peek() { return getNext(index); }
+    public virtual  string getName(int i) { return i >= getStreamLength() ? "" : "" + getCharValue(i); }
 
-    public void reset(int i) { index = i - 1; }
+    public virtual  int peek() { return getNext(index); }
 
-    public void reset() { index = -1; }
+    public virtual  void reset(int i) { index = i - 1; }
 
-    public int badToken() { return 0; }
+    public virtual  void reset() { index = -1; }
 
-    public int getLine(int i) { return getLineNumberOfCharAt(i); }
+    public virtual  int badToken() { return 0; }
 
-    public int getColumn(int i) { return getColumnOfCharAt(i); }
+    public virtual  int getLine(int i) { return getLineNumberOfCharAt(i); }
 
-    public int getEndLine(int i) { return getLine(i); }
+    public virtual  int getColumn(int i) { return getColumnOfCharAt(i); }
 
-    public int getEndColumn(int i) { return getColumnOfCharAt(i); }
+    public virtual  int getEndLine(int i) { return getLine(i); }
 
-    public bool afterEol(int i) { return (i < 1 ? true : getLineNumberOfCharAt(i - 1) < getLineNumberOfCharAt(i)); }
+    public virtual  int getEndColumn(int i) { return getColumnOfCharAt(i); }
+
+    public virtual  bool afterEol(int i)
+    {
+        return (i < 1 ? true : getLineNumberOfCharAt(i - 1) < getLineNumberOfCharAt(i));
+    }
 
     /**
      * @deprecated replaced by {@link #getFirstRealToken()}
      *
      */
-    public int getFirstErrorToken(int i) { return getFirstRealToken(i); }
-    public int getFirstRealToken(int i) { return i; }
+    public virtual int getFirstErrorToken(int i) { return getFirstRealToken(i); }
+    public virtual   int getFirstRealToken(int i) { return i; }
 
     /**
      * @deprecated replaced by {@link #getLastRealToken()}
      *
      */
-    public int getLastErrorToken(int i) { return getLastRealToken(i); }
-    public int getLastRealToken(int i) { return i; }
+    public virtual int getLastErrorToken(int i) { return getLastRealToken(i); }
+    public virtual  int getLastRealToken(int i) { return i; }
 
     //
     // Here is where we report errors.  The default method is simply to print the error message to the console.
@@ -269,18 +279,18 @@ public class LexStream : ParseErrorCodes, ILexStream
     //
     private IMessageHandler errMsg = null;// this is the error message handler object
     
-    public void setMessageHandler(IMessageHandler errMsg) { this.errMsg = errMsg; }
+    public virtual  void setMessageHandler(IMessageHandler errMsg) { this.errMsg = errMsg; }
 
-    public IMessageHandler getMessageHandler() { return errMsg; }
+    public virtual  IMessageHandler getMessageHandler() { return errMsg; }
     
-    public void makeToken(int startLoc, int endLoc, int kind)
+    public virtual  void makeToken(int startLoc, int endLoc, int kind)
     {
         if (prsStream != null) // let the parser find the error
              prsStream.makeToken(startLoc, endLoc, kind);
         else this.reportLexicalError(startLoc, endLoc); // make it a lexical error
     }
 
-    public void reportLexicalError(int left_loc, int right_loc)
+    public virtual  void  reportLexicalError(int left_loc, int right_loc)
     {
         int errorCode = (right_loc >= streamLength
                                     ? EOF_CODE
@@ -298,7 +308,7 @@ public class LexStream : ParseErrorCodes, ILexStream
     /**
      * See IMessaageHandler for a description of the int[] return value.
      */
-    public int[] getLocation(int left_loc, int right_loc)
+    public virtual  int[] getLocation(int left_loc, int right_loc)
     {
         int length = (right_loc < streamLength
                                 ? right_loc
@@ -314,7 +324,7 @@ public class LexStream : ParseErrorCodes, ILexStream
                };
     }
     
-    public void reportLexicalError(int errorCode, int left_loc, int right_loc, int error_left_loc, int error_right_loc,
+    public virtual  void reportLexicalError(int errorCode, int left_loc, int right_loc, int error_left_loc, int error_right_loc,
         string[] errorInfo)
     {
         if (errMsg == null)
@@ -353,7 +363,7 @@ public class LexStream : ParseErrorCodes, ILexStream
     // to be indexes into the input stream as the tokens for a lexer are the characters
     // in the input stream.
     //
-    public void reportError(int errorCode, int leftToken, int rightToken, string errorInfo)
+    public virtual  void reportError(int errorCode, int leftToken, int rightToken, string errorInfo)
     {
         reportError(errorCode, 
                     leftToken, 
@@ -362,7 +372,7 @@ public class LexStream : ParseErrorCodes, ILexStream
                     errorInfo == null ? null : new string[] { errorInfo });
     }
     
-    public void reportError(int errorCode, int leftToken, int rightToken, string []errorInfo)
+    public virtual  void reportError(int errorCode, int leftToken, int rightToken, string []errorInfo)
     {
         reportError(errorCode, 
                     leftToken, 
@@ -376,7 +386,7 @@ public class LexStream : ParseErrorCodes, ILexStream
     // to be indexes into the input stream as the tokens for a lexer are the characters
     // in the input stream.
     //
-    public void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string errorInfo)
+    public virtual  void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string errorInfo)
     {
         reportError(errorCode, 
                     leftToken, 
@@ -385,7 +395,7 @@ public class LexStream : ParseErrorCodes, ILexStream
                     errorInfo == null ? null : new string[] { errorInfo });
     }
     
-    public void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string[] errorInfo)
+    public virtual  void reportError(int errorCode, int leftToken, int errorToken, int rightToken, string[] errorInfo)
     {
         reportLexicalError(errorCode, 
                            leftToken, 
@@ -395,7 +405,7 @@ public class LexStream : ParseErrorCodes, ILexStream
                            errorInfo == null ? new string[] {} : errorInfo);
     }
     
-    public string toString(int startOffset, int endOffset)
+    public virtual  string ToString(int startOffset, int endOffset)
     {
         int length = endOffset - startOffset + 1;
         return (endOffset >= inputChars.Length

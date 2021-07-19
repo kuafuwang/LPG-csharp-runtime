@@ -1,7 +1,7 @@
 namespace LPG2.Runtime
 {
 
-    public abstract class AbstractToken : IToken
+    public   abstract class AbstractToken : IToken
     {
         private int kind = 0,
             startOffset = 0,
@@ -11,11 +11,11 @@ namespace LPG2.Runtime
 
         private IPrsStream iPrsStream;
 
-        public AbstractToken()
+        public   AbstractToken()
         {
         }
 
-        public AbstractToken(IPrsStream iPrsStream, int startOffset, int endOffset, int kind)
+        public   AbstractToken(IPrsStream iPrsStream, int startOffset, int endOffset, int kind)
         {
             this.iPrsStream = iPrsStream;
             this.startOffset = startOffset;
@@ -23,85 +23,85 @@ namespace LPG2.Runtime
             this.kind = kind;
         }
 
-        public int getKind()
+        public   virtual int getKind()
         {
             return kind;
         }
 
-        public void setKind(int kind)
+        public virtual  void setKind(int kind)
         {
             this.kind = kind;
         }
 
-        public int getStartOffset()
+        public virtual  int getStartOffset()
         {
             return startOffset;
         }
 
-        public void setStartOffset(int startOffset)
+        public virtual  void setStartOffset(int startOffset)
         {
             this.startOffset = startOffset;
         }
 
-        public int getEndOffset()
+        public virtual  int getEndOffset()
         {
             return endOffset;
         }
 
-        public void setEndOffset(int endOffset)
+        public virtual  void setEndOffset(int endOffset)
         {
             this.endOffset = endOffset;
         }
 
-        public int getTokenIndex()
+        public virtual  int getTokenIndex()
         {
             return tokenIndex;
         }
 
-        public void setTokenIndex(int tokenIndex)
+        public virtual  void setTokenIndex(int tokenIndex)
         {
             this.tokenIndex = tokenIndex;
         }
 
-        public void setAdjunctIndex(int adjunctIndex)
+        public virtual  void setAdjunctIndex(int adjunctIndex)
         {
             this.adjunctIndex = adjunctIndex;
         }
 
-        public abstract IToken[] getPrecedingAdjuncts();
-        public abstract IToken[] getFollowingAdjuncts();
+        public   abstract IToken[] getPrecedingAdjuncts();
+        public   abstract IToken[] getFollowingAdjuncts();
 
-        public int getAdjunctIndex()
+        public virtual  int getAdjunctIndex()
         {
             return adjunctIndex;
         }
 
-        public IPrsStream getIPrsStream()
+        public virtual  IPrsStream getIPrsStream()
         {
             return iPrsStream;
         }
 
-        public ILexStream getILexStream()
+        public virtual  ILexStream getILexStream()
         {
             return iPrsStream == null ? null : iPrsStream.getILexStream();
         }
 
-        public int getLine()
+        public virtual  int getLine()
         {
             return (iPrsStream == null ? 0 : iPrsStream.getILexStream().getLineNumberOfCharAt(startOffset));
         }
 
-        public int getColumn()
+        public virtual  int getColumn()
         {
             return (iPrsStream == null ? 0 : iPrsStream.getILexStream().getColumnOfCharAt(startOffset));
         }
 
-        public int getEndLine()
+        public virtual  int getEndLine()
         {
             return (iPrsStream == null ? 0 : iPrsStream.getILexStream().getLineNumberOfCharAt(endOffset));
         }
 
-        public int getEndColumn()
+        public virtual  int getEndColumn()
         {
             return (iPrsStream == null ? 0 : iPrsStream.getILexStream().getColumnOfCharAt(endOffset));
         }
@@ -109,7 +109,7 @@ namespace LPG2.Runtime
         /**
      * @deprecated replaced by {@link #getIPrsStream()}
      */
-        public IPrsStream getPrsStream()
+        public virtual  IPrsStream getPrsStream()
         {
             return iPrsStream;
         }
@@ -118,34 +118,34 @@ namespace LPG2.Runtime
         /**
      * @deprecated replaced by {@link #getILexStream()}
      */
-        public ILexStream getLexStream()
+        public virtual  ILexStream getLexStream()
         {
             return iPrsStream == null ? null : iPrsStream.getILexStream();
         }
 
         /**
-     * @deprecated replaced by {@link #toString()}
+     * @deprecated replaced by {@link #ToString()}
      */
-        public string getValue(char[] inputChars)
+        public virtual  string getValue(char[] inputChars)
         {
             if (iPrsStream != null)
-                return toString();
+                return ToString();
             if (iPrsStream.getLexStream() is LexStream)
             {
                 LexStream lex_stream = (LexStream) iPrsStream.getLexStream();
                 if (inputChars != lex_stream.getInputChars())
                     throw new MismatchedInputCharsException();
-                return toString();
+                return ToString();
             }
             throw new UnknownStreamType("Unknown stream type " +
                                         iPrsStream.getLexStream().GetType().ToString());
         }
 
-        public string toString()
+        public override  string ToString()
         {
             return (iPrsStream == null
-                ? "<toString>"
-                : iPrsStream.toString(this, this));
+                ? "<ToString>"
+                : iPrsStream.ToString(this, this));
         }
     }
 }

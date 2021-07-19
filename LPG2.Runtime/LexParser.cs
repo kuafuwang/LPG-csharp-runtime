@@ -125,7 +125,7 @@ namespace LPG2.Runtime
         // xi => ti w. If xi is a nullable nonterminal, then ti is the first
         //  symbol that immediately follows xi in the input (the lookahead).
         //
-        public  int getToken(int i)
+        public  virtual  int getToken(int i)
         {
             if (taking_actions)
                 return locationStack[stateStackTop + (i - 1)];
@@ -232,7 +232,7 @@ namespace LPG2.Runtime
                     {
                         stack[++stateStackTop] = currentAction;
                     }
-                    catch (IndexOutOfRangeException e)
+                    catch (IndexOutOfRangeException)
                     {
                         reallocateStacks();
                         stack[stateStackTop] = currentAction;
@@ -484,7 +484,7 @@ namespace LPG2.Runtime
                 {
                     stack[++stateStackTop] = currentAction;
                 }
-                catch (IndexOutOfRangeException e)
+                catch (IndexOutOfRangeException)
                 {
                     reallocateStacks();
                     stack[stateStackTop] = currentAction;

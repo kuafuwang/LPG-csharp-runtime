@@ -59,12 +59,12 @@ namespace LPG2.Runtime
                 return kind.Length;
             }
 
-            public int hashCode()
+            public override int GetHashCode()
             {
                 return hash_code;
             }
 
-            public bool equals(object anObject)
+            public override bool Equals(object anObject)
             {
                 if (this == anObject)
                     return true;
@@ -109,7 +109,7 @@ namespace LPG2.Runtime
                 return end_column;
             }
 
-            public string toString()
+            public override string ToString()
             {
                 StringBuilder buffer = new StringBuilder(buffer_length);
                 if (name.Length > 0)

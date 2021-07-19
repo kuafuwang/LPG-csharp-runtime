@@ -22,7 +22,7 @@ namespace LPG2.Runtime
         this.str = str;
     }
 
-    public string toString()
+    public override string ToString()
     {
         return str;
     }

@@ -13,8 +13,8 @@ namespace LPG2.Runtime
         //
         public interface ILine
         {
-            public abstract int hashCode();
-            public abstract bool equals(object anObject);
+            public abstract int GetHashCode();
+            public abstract bool Equals(object anObject);
             public abstract int size();
             public abstract int getStartLine();
             public abstract int getStartColumn();
@@ -197,7 +197,7 @@ namespace LPG2.Runtime
                 k;
             for (i = 1; i < newBuffer.Length && i < oldBuffer.Length; i++)
             {
-                if (!(newBuffer[i].equals(oldBuffer[i])))
+                if (!(newBuffer[i].Equals(oldBuffer[i])))
                     break;
             }
 
@@ -211,7 +211,7 @@ namespace LPG2.Runtime
                 i > newStart && k > oldStart;
                 i--, k--)
             {
-                if (!(newBuffer[i].equals(oldBuffer[k])))
+                if (!(newBuffer[i].Equals(oldBuffer[k])))
                     break;
             }
 
@@ -339,7 +339,7 @@ namespace LPG2.Runtime
         {
             for (int i = 0; i <= bound; i++)
             {
-                if (!oldBuffer[olds + i].equals(newBuffer[news + i]))
+                if (!oldBuffer[olds + i].Equals(newBuffer[news + i]))
                     return false;
             }
 
@@ -589,14 +589,14 @@ namespace LPG2.Runtime
                         {
                             if (newi >= news && newi + largest <= newe)
                             {
-                                if (oldBuffer[oldi + largest].equals(newBuffer[newi + largest]))
+                                if (oldBuffer[oldi + largest].Equals(newBuffer[newi + largest]))
                                 {
                                     // Any chance to do better than before?
                                     int bound = min(newe - newi, olde - oldi),
                                         i;
                                     for (i = 1; i <= bound; i++)
                                     {
-                                        if (!oldBuffer[oldi + i].equals(newBuffer[newi + i]))
+                                        if (!oldBuffer[oldi + i].Equals(newBuffer[newi + i]))
                                             break;
                                     }
 

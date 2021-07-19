@@ -252,7 +252,7 @@ public class DeterministicParser : Stacks
             {
                 stateStack[++stateStackTop] = currentAction;
             }
-            catch(IndexOutOfRangeException e)
+            catch(IndexOutOfRangeException )
             {
                 reallocateStacks();
                 stateStack[stateStackTop] = currentAction;
@@ -433,7 +433,7 @@ public class DeterministicParser : Stacks
             {
                 locationStack[location_top + 1] = currentAction;
             }
-            catch(IndexOutOfRangeException e)
+            catch(IndexOutOfRangeException )
             {
                 reallocateStacks();
                 locationStack[location_top + 1] = currentAction;
@@ -485,7 +485,7 @@ public class DeterministicParser : Stacks
             {
                 stateStack[++stateStackTop] = currentAction;
             }
-            catch(IndexOutOfRangeException e)
+            catch(IndexOutOfRangeException)
             {
                 reallocateStacks();
                 stateStack[stateStackTop] = currentAction;
@@ -553,7 +553,7 @@ public class DeterministicParser : Stacks
                 }
             }
         }
-        catch (Exception e) // if any exception is thrown, indicate BadParse
+        catch (Exception) // if any exception is thrown, indicate BadParse
         {
             taking_actions = false; // indicate that we are done.
             throw new BadParseException(curtok);

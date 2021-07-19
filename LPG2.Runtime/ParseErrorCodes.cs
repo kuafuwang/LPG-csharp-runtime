@@ -1,7 +1,7 @@
 namespace LPG2.Runtime
 {
 
-public class  ParseErrorCodes
+public abstract class  ParseErrorCodes
 {
     public   const int  LEX_ERROR_CODE = 0,
                              ERROR_CODE = 1,

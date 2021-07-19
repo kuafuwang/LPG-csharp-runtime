@@ -57,7 +57,7 @@ public class RecoveryParser : DiagnoseParser
         return;
     }
 
-    public void reportError(int scope_index, int error_token)
+    public  void reportError(int scope_index, int error_token)
     {
         string text = "\"";
         for (int i = scopeSuffix(scope_index); scopeRhs(i) != 0; i++)
@@ -203,7 +203,7 @@ public class RecoveryParser : DiagnoseParser
                 {
                     stateStack[++stateStackTop] = act;
                 }
-                catch(IndexOutOfRangeException e)
+                catch(IndexOutOfRangeException )
                 {
                     reallocateStacks();
                     stateStack[stateStackTop] = act;
@@ -272,7 +272,7 @@ public class RecoveryParser : DiagnoseParser
                 {
                     stateStack[++stateStackTop] = act;
                 }
-                catch(IndexOutOfRangeException e)
+                catch(IndexOutOfRangeException )
                 {
                     reallocateStacks();
                     stateStack[stateStackTop] = act;
@@ -500,7 +500,7 @@ public class RecoveryParser : DiagnoseParser
                 act = baseAction(i);
                 action.add(act); // save this terminal action
                 if (act <= NUM_RULES) // Ignore reduce actions
-                    ;
+                {}
                 else if (act < ACCEPT_ACTION)
                 {
                     nextStackTop++;

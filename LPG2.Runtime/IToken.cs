@@ -43,10 +43,10 @@ namespace LPG2.Runtime
         public int getEndColumn();
 
         /**
-     * @deprecated replaced by toString()
+     * @deprecated replaced by ToString()
      */
         public abstract string getValue(char[] inputChars);
 
-        public abstract string toString();
+     
     }
 }

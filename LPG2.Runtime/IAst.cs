@@ -11,8 +11,8 @@ namespace LPG2.Runtime
         public IToken getRightIToken();
         public IToken[] getPrecedingAdjuncts();
         public IToken[] getFollowingAdjuncts();
-        public ArrayList getChildren();
-        public ArrayList getAllChildren();
+        public System.Collections.ArrayList getChildren();
+        public System.Collections.ArrayList getAllChildren();
         public void accept(IAstVisitor v);
     }
 

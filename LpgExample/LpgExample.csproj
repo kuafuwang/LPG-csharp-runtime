@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <StartupObject>LpgExample.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="grammar\**" />
+    <EmbeddedResource Remove="grammar\**" />
+    <None Remove="grammar\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="LPGKWLexer.l" />
+    <None Remove="LPGLexer.l" />
+    <None Remove="LPGParser.l" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LPG2.Runtime\LPG2.Runtime.csproj" />
+  </ItemGroup>
+
+</Project>
