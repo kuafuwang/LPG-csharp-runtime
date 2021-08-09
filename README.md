@@ -1,5 +1,12 @@
+[![](https://vsmarketplacebadge.apphb.com/version-short/kuafuwang.lpg-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=kuafuwang.lpg-vscode)
 # LPG-csharp-runtime
 C# runtime for The LALR parser generator (LPG)
+
+<!-- nuget packages -->
+| Package | NuGet |
+| ------- | ----- |
+| LPG2.Runtime | [LPG2.Runtime](https://www.nuget.org/packages/LPG2.Runtime/) |
+<!-- nuget packages -->
 
 ## Getting Started with LPG
 
