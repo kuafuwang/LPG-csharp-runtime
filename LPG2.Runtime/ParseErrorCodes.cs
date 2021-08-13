@@ -18,7 +18,8 @@ public abstract class  ParseErrorCodes
                              INVALID_TOKEN_CODE = 11,
                              ERROR_RULE_ERROR_CODE = 11,
                              ERROR_RULE_WARNING_CODE = 12,
-                             NO_MESSAGE_CODE = 13;
+                             NO_MESSAGE_CODE = 13,
+                             MANUAL_CODE = 14;
 
     public  static string[] errorMsgText= {
         /* LEX_ERROR_CODE */                       "unexpected character ignored", //$NON-NLS-1$

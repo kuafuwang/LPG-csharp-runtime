@@ -2553,6 +2553,212 @@ namespace LPG2.Runtime
 
 
         //
+        // This procedure is invoked to form a secondary error message.
+        // The parameter k identifies the error to be processed.  The
+        // global variable: msg, is used to store the message.
+        //
+        string PrintSecondaryMessage(int msg_code,
+            int name_index,
+            int left_token_loc,
+            int right_token_loc,
+            int scope_name_index)
+        {
+            //using std::wcout;
+            string message="";
+            string str="";
+            int i,
+                len = 0;
+
+            if (name_index >= 0)
+            {
+
+                str = name(name_index);
+                len = str.Length;
+            }
+
+            switch (msg_code)
+            {
+                case MISPLACED_CODE:
+                    message += "Misplaced construct(s)";
+                    break;
+                case SCOPE_CODE:
+                    message += '\"';
+                    for (i = scopeSuffix(-(int)name_index);
+                        scopeRhs(i) != 0; i++)
+                    {
+                        len = name(scopeRhs(i)).Length;
+                        str = name(scopeRhs(i));
+                        for (int j = 0; j < len; j++)
+                            message += str[j];
+                        if (scopeRhs(i + 1) > 0) // any more symbols to print?
+                            message += ' ';
+                    }
+                    message += '\"';
+                    message += " inserted to complete scope";
+                    //
+                    // TODO: This should not be an option
+                    //
+                    if (scope_name_index >= 0)
+                    {
+                        str = name(scope_name_index);
+                        len = str.Length;
+                        for (int j = 0; j < len; j++) // any more symbols to print?
+                            message += str[j];
+                    }
+                    else message += "phrase";
+                    break;
+                case MANUAL_CODE:
+                    message += '\"';
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    message += "\" inserted to complete structure";
+                    break;
+                case MERGE_CODE:
+                    message += "Symbols merged to form ";
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    break;
+                default:
+                {
+                    if (msg_code == DELETION_CODE || len == 0)
+                        message += "Unexpected input discarded";
+                    else
+                    {
+                        for (i = 0; i < len; i++)
+                            message += str[i];
+                        message += " expected instead";
+                    }
+                }
+                    break;
+    
+            }
+
+            return message;
+
+
+        }
+
+
+
+        //
+        // This procedure is invoked to form a primary error message. The
+        // parameter k identifies the error to be processed.  The global
+        // variable: msg, is used to store the message.
+        //
+        string PrintPrimaryMessage(int msg_code,
+            int name_index,
+            int left_token_loc,
+            int right_token_loc,
+            int scope_name_index)
+        {
+            string message = "";
+            string str = "";
+
+            int i,
+                len = 0;
+
+            if (name_index >= 0)
+            {
+                str = name(name_index);
+                len = str.Length;
+
+            }
+
+            switch (msg_code)
+            {
+                case ERROR_CODE:
+                    message += "Parsing terminated at this token";
+                    break;
+                case BEFORE_CODE:
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    message += " inserted before this token";
+                    break;
+                case INSERTION_CODE:
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    message += " expected after this token";
+                    break;
+                case DELETION_CODE:
+                    if (left_token_loc == right_token_loc)
+                        message += "Unexpected symbol ignored";
+                    else message += "Unexpected symbols ignored";
+                    break;
+                case INVALID_CODE:
+                    if (len == 0)
+                        message += "Unexpected input discarded";
+                    else
+                    {
+                        message += "Invalid ";
+                        for (i = 0; i < len; i++)
+                            message += str[i];
+                    }
+                    break;
+                case SUBSTITUTION_CODE:
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    message += " expected instead of this token";
+                    break;
+                case SCOPE_CODE:
+                    message += '\"';
+                    for (i = scopeSuffix(-name_index);
+                        scopeRhs(i) != 0; i++)
+                    {
+                        len = name(scopeRhs(i)).Length;
+                        str = name(scopeRhs(i));
+                        for (int j = 0; j < len; j++)
+                            message += str[j];
+                        if (scopeRhs(i + 1) >= 0 ) // any more symbols to print?
+                            message += ' ';
+                    }
+                    message += '\"';
+                    message += " inserted to complete scope";
+                    //
+                    // TODO: This should not be an option
+                    //
+                    if (scope_name_index >= 0)
+                    {
+                        str = name(scope_name_index);
+                        len = str.Length;
+                        for (int j = 0; j < len; j++) // any more symbols to print?
+                            message += str[j];
+                    }
+                    else message += "scope";
+                    break;
+                case MANUAL_CODE:
+                    message += '\"';
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    message += "\" inserted to complete structure";
+                    break;
+                case MERGE_CODE:
+                    message += "symbols merged to form ";
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    break;
+                case EOF_CODE:
+                    for (i = 0; i < len; i++)
+                        message += str[i];
+                    message += " reached after this token";
+                    break;
+                default:
+                    if (msg_code == MISPLACED_CODE)
+                        message += "misplaced construct(s)";
+                    else if (len == 0)
+                        message += "unexpected input discarded";
+                    else
+                    {
+                        for (i = 0; i < len; i++)
+                            message += str[i];
+                        message += " expected instead";
+                    }
+                    break;
+            }
+
+            message += '\n';
+            return message;
+        }
+        //
         // This method is invoked by an LPG PARSER or a semantic
         // routine to process an error message.
         //
@@ -2564,11 +2770,27 @@ namespace LPG2.Runtime
         {
             int left_token_loc = (left_token > right_token ? right_token : left_token),
                 right_token_loc = right_token;
+            string token_name="";
+            if (left_token_loc < right_token_loc)
+                token_name = PrintSecondaryMessage(msg_code,
+                    name_index,
+                    left_token_loc,
+                    right_token_loc,
+                    scope_name_index);
+            else
+                token_name = PrintPrimaryMessage(msg_code,
+                    name_index,
+                    left_token_loc,
+                    right_token_loc,
+                    scope_name_index);
 
-            string token_name = (name_index >= 0 &&
-                                 !name(name_index).Equals("ERROR", StringComparison.InvariantCultureIgnoreCase)
-                ? "\"" + name(name_index) + "\""
-                : "");
+            if (token_name.Length == 0)
+            {
+                token_name = (name_index >= 0 &&
+                              !name(name_index).Equals("ERROR", StringComparison.InvariantCultureIgnoreCase)
+                    ? "\"" + name(name_index) + "\""
+                    : "");
+            }
 
             if (msg_code == INVALID_CODE)
                 msg_code = token_name.Length == 0 ? INVALID_CODE : INVALID_TOKEN_CODE;
