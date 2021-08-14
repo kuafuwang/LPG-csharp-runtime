@@ -1,4 +1,7 @@
 [![](https://vsmarketplacebadge.apphb.com/version-short/kuafuwang.lpg-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=kuafuwang.lpg-vscode)
+
+# This project had moved to https://github.com/The-LALR-parser-generator-LPG/LPG-csharp-runtime
+
 # LPG-csharp-runtime
 C# runtime for The LALR parser generator (LPG)
 
